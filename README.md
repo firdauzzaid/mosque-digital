@@ -49,16 +49,12 @@ Set-Location android
 ```
 
 The unsigned development APK will be at
-`android\app\build\outputs\apk\debug\app-debug.apk`. A release that updates
-the legacy APK requires its original Android signing key; otherwise Android
-treats it as a different app.
+`android\app\build\outputs\apk\debug\app-debug.apk`. Updating an already
+installed app requires its original Android signing key; otherwise Android
+treats this build as a different app.
 
 ## Offline behaviour
 
 Configuration is saved in browser storage and uploaded media in IndexedDB.
 Backup text includes configuration and schedules but deliberately excludes
 large uploaded media. The display uses the device's local time zone.
-
-The previous bundled HTML is preserved at `legacy/index.html`, and its APK at
-`Display Masjid Offline v4.apk`; the new source application is in `src/`.
-# mosque-digital

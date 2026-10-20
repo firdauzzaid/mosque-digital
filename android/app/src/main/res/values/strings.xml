@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mosque Display</string>
+    <string name="title_activity_main">Mosque Display</string>
+    <string name="package_name">id.masjid.display</string>
+    <string name="custom_url_scheme">id.masjid.display</string>
+</resources>

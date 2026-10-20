@@ -1,0 +1,32 @@
+# JavaScript dependencies and generated web output
+node_modules/
+dist/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Per-machine tools, environment values, and editor state
+.tools/
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.log
+*.local
+Thumbs.db
+.DS_Store
+
+# Generated project analysis
+graphify-out/
+
+# Android build output and machine-specific SDK/signing configuration.
+# The Android source itself is intentionally tracked.
+android/local.properties
+android/.gradle/
+android/**/build/
+*.apk
+*.aab
+*.keystore
+*.jks
+key.properties

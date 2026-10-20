@@ -1,0 +1,70 @@
+import { prayerNames, type AppConfig, type PrayerName, type PrayerSchedule } from './types'
+
+export type PrayerPhaseName = 'normal' | 'preAdhan' | 'adhan' | 'iqamah' | 'blackout'
+export type PrayerPhase = {
+  name: PrayerPhaseName
+  prayer?: PrayerName
+  occurrenceKey?: string
+  endsAt?: Date
+}
+
+export const dateKeyLocal = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+
+const dayAtOffset = (date: Date, offset: number) => {
+  const result = new Date(date)
+  result.setDate(result.getDate() + offset)
+  return result
+}
+
+const localTime = (day: Date, value: string) => {
+  const [hours, minutes] = value.split(':').map(Number)
+  const result = new Date(day)
+  result.setHours(hours, minutes, 0, 0)
+  return result
+}
+
+const phaseForPrayer = (now: Date, day: Date, prayer: PrayerName, time: string, config: AppConfig): PrayerPhase | undefined => {
+  const adhanAt = localTime(day, time)
+  const preAdhanAt = new Date(adhanAt.getTime() - config.timings.preAdhanMinutes * 60_000)
+  const iqamahAt = new Date(adhanAt.getTime() + config.timings.adhanMinutes * 60_000)
+  const blackoutAt = new Date(iqamahAt.getTime() + config.timings.iqamahMinutes * 60_000)
+  const displayAt = new Date(blackoutAt.getTime() + config.timings.blackoutMinutes * 60_000)
+  const occurrenceKey = `${dateKeyLocal(day)}:${prayer}`
+
+  if (now >= preAdhanAt && now < adhanAt) return { name: 'preAdhan', prayer, occurrenceKey, endsAt: adhanAt }
+  if (now >= adhanAt && now < iqamahAt) return { name: 'adhan', prayer, occurrenceKey, endsAt: iqamahAt }
+  if (now >= iqamahAt && now < blackoutAt) return { name: 'iqamah', prayer, occurrenceKey, endsAt: blackoutAt }
+  if (now >= blackoutAt && now < displayAt) return { name: 'blackout', prayer, occurrenceKey, endsAt: displayAt }
+  return undefined
+}
+
+export const getPrayerPhase = (now: Date, schedules: Record<string, PrayerSchedule>, config: AppConfig): PrayerPhase => {
+  for (const offset of [-1, 0, 1]) {
+    const day = dayAtOffset(now, offset)
+    const schedule = schedules[dateKeyLocal(day)]
+    if (!schedule) continue
+    for (const prayer of prayerNames) {
+      const time = schedule[prayer]
+      if (!time) continue
+      const phase = phaseForPrayer(now, day, prayer, time, config)
+      if (phase) return phase
+    }
+  }
+  return { name: 'normal' }
+}
+
+export const nextPrayer = (now: Date, schedules: Record<string, PrayerSchedule>) => {
+  for (const offset of [0, 1]) {
+    const day = dayAtOffset(now, offset)
+    const schedule = schedules[dateKeyLocal(day)]
+    if (!schedule) continue
+    for (const prayer of prayerNames) {
+      const time = schedule[prayer]
+      if (!time) continue
+      const at = localTime(day, time)
+      if (at > now) return { prayer, at }
+    }
+  }
+  return undefined
+}
