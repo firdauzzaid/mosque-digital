@@ -20,10 +20,17 @@ Thumbs.db
 # Generated project analysis
 graphify-out/
 
+# Local AI/design tooling. Recreate with the project tooling when needed.
+.agents/
+.codex/
+.impeccable/
+.impeccable-cache/
+
 # Android build output and machine-specific SDK/signing configuration.
 # The Android source itself is intentionally tracked.
 android/local.properties
 android/.gradle/
+android/.gradle-user/
 android/**/build/
 *.apk
 *.aab

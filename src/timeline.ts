@@ -5,7 +5,22 @@ export type PrayerPhase = {
   name: PrayerPhaseName
   prayer?: PrayerName
   occurrenceKey?: string
+  startsAt?: Date
   endsAt?: Date
+}
+
+const shortTime = (date: Date) => `${String(date.getHours()).padStart(2, '0')}.${String(date.getMinutes()).padStart(2, '0')}`
+
+export const displayPhaseStatus = (phase: PrayerPhase) => {
+  const prayer = phase.prayer ? ` ${phase.prayer}` : ''
+  if (phase.name === 'blackout' && phase.endsAt) {
+    const until = shortTime(phase.endsAt)
+    return { previewLabel: `Tayangkan display — hitam hingga ${until}`, notice: `Display akan hitam hingga ${until}.` }
+  }
+  if (phase.name === 'preAdhan') return { previewLabel: `Tayangkan display — menjelang azan${prayer}`, notice: `Display berada pada fase menjelang azan${prayer}.` }
+  if (phase.name === 'adhan') return { previewLabel: `Tayangkan display — azan${prayer}`, notice: `Display berada pada fase azan${prayer}.` }
+  if (phase.name === 'iqamah') return { previewLabel: `Tayangkan display — menuju iqamah${prayer}`, notice: `Display berada pada fase menuju iqamah${prayer}.` }
+  return { previewLabel: 'Tayangkan display', notice: 'Display siap ditayangkan.' }
 }
 
 export const dateKeyLocal = (date: Date) =>
@@ -32,14 +47,15 @@ const phaseForPrayer = (now: Date, day: Date, prayer: PrayerName, time: string, 
   const displayAt = new Date(blackoutAt.getTime() + config.timings.blackoutMinutes * 60_000)
   const occurrenceKey = `${dateKeyLocal(day)}:${prayer}`
 
-  if (now >= preAdhanAt && now < adhanAt) return { name: 'preAdhan', prayer, occurrenceKey, endsAt: adhanAt }
-  if (now >= adhanAt && now < iqamahAt) return { name: 'adhan', prayer, occurrenceKey, endsAt: iqamahAt }
-  if (now >= iqamahAt && now < blackoutAt) return { name: 'iqamah', prayer, occurrenceKey, endsAt: blackoutAt }
-  if (now >= blackoutAt && now < displayAt) return { name: 'blackout', prayer, occurrenceKey, endsAt: displayAt }
+  if (now >= preAdhanAt && now < adhanAt) return { name: 'preAdhan', prayer, occurrenceKey, startsAt: preAdhanAt, endsAt: adhanAt }
+  if (now >= adhanAt && now < iqamahAt) return { name: 'adhan', prayer, occurrenceKey, startsAt: adhanAt, endsAt: iqamahAt }
+  if (now >= iqamahAt && now < blackoutAt) return { name: 'iqamah', prayer, occurrenceKey, startsAt: iqamahAt, endsAt: blackoutAt }
+  if (now >= blackoutAt && now < displayAt) return { name: 'blackout', prayer, occurrenceKey, startsAt: blackoutAt, endsAt: displayAt }
   return undefined
 }
 
 export const getPrayerPhase = (now: Date, schedules: Record<string, PrayerSchedule>, config: AppConfig): PrayerPhase => {
+  const phases: PrayerPhase[] = []
   for (const offset of [-1, 0, 1]) {
     const day = dayAtOffset(now, offset)
     const schedule = schedules[dateKeyLocal(day)]
@@ -48,10 +64,10 @@ export const getPrayerPhase = (now: Date, schedules: Record<string, PrayerSchedu
       const time = schedule[prayer]
       if (!time) continue
       const phase = phaseForPrayer(now, day, prayer, time, config)
-      if (phase) return phase
+      if (phase) phases.push(phase)
     }
   }
-  return { name: 'normal' }
+  return phases.sort((left, right) => (right.startsAt?.getTime() ?? 0) - (left.startsAt?.getTime() ?? 0))[0] ?? { name: 'normal' }
 }
 
 export const nextPrayer = (now: Date, schedules: Record<string, PrayerSchedule>) => {

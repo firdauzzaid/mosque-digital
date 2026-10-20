@@ -1,9 +1,10 @@
 import type { AppConfig } from './types'
 
 export const defaultConfig: AppConfig = {
+  schemaVersion: 2,
   mosqueName: 'MASJID RAYA AL-IKHLAS',
   mosqueAddress: 'Jl. Kebaikan No. 99, Kota Beriman',
-  adminPin: '12345',
+  access: {},
   runningText: 'Selamat datang. Luruskan dan rapatkan shaf. Matikan alat komunikasi saat salat berlangsung.',
   logoUrl: '',
   backgroundUrl: '',
@@ -13,6 +14,7 @@ export const defaultConfig: AppConfig = {
   widgetSize: 'normal',
   display: { zoom: 100, paddingX: 0, paddingY: 0, runningTextSpeed: 30, runningTextSize: 32 },
   schedule: {},
+  scheduleMetadata: {},
   slides: [
     { id: 'infak', title: 'Mari Berinfak', content: 'Barangsiapa membangun masjid karena Allah, maka Allah membangunkan baginya rumah di surga.' },
     { id: 'kajian', title: 'Kajian Rutin', content: "Kajian ba'da Maghrib setiap Sabtu. Mari hadir bersama keluarga." },
