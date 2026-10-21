@@ -26,9 +26,9 @@ Android SDK licences yourself, then run `npm.cmd run android:sync`. The
 APK files, and signing keys stay local and are recreated per device.
 
 Display settings and uploaded media are deliberately stored on the display
-device (browser storage and IndexedDB), not in Git. Export a backup from the
-admin panel before moving to another device; upload its media again after
-restoring the settings.
+device (browser storage and IndexedDB), not in Git. Export a complete backup
+from the admin panel before moving to another device, then restore its
+`.mdisplay` file to recover both settings and uploaded media.
 
 ## Validate and build web assets
 
@@ -61,5 +61,6 @@ power outage.
 ## Offline behaviour
 
 Configuration is saved in browser storage and uploaded media in IndexedDB.
-Backup text includes configuration and schedules but deliberately excludes
-large uploaded media. The display uses the device's local time zone.
+The compact text backup includes configuration and schedules only. The complete
+`.mdisplay` backup includes uploaded media up to 100 MB per file. The display
+uses the device's local time zone.

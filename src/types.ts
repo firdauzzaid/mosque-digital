@@ -6,11 +6,12 @@ export type MediaItem = {
   id: string
   name: string
   type: string
+  placement?: 'background' | 'slideshow'
   url?: string
   durationSeconds?: number
 }
 
-export type Slide = { id: string; title: string; content: string }
+export type Slide = { id: string; title: string; titleColor?: string; content: string; mediaId?: string; mediaMode?: 'none' | 'playlist'; durationSeconds?: number; showText?: boolean }
 export type AgendaItem = { id: string; day: string; activity: string; time: string }
 
 export type AdminAccess = { pinHash?: string; pinSalt?: string }
@@ -25,10 +26,11 @@ export type AppConfig = {
   logoUrl: string
   backgroundUrl: string
   backgroundMode: 'theme' | 'image'
+  backgroundMediaId?: string
   theme: 'emerald' | 'gold' | 'blue' | 'red' | 'purple' | 'cyan' | 'slate' | 'orange'
   layoutId: number
   widgetSize: 'small' | 'normal' | 'large' | 'extra'
-  display: { zoom: number; paddingX: number; paddingY: number; runningTextSpeed: number; runningTextSize: number }
+  display: { zoom: number; paddingX: number; paddingY: number; runningTextSpeed: number; runningTextSize: number; showSlideshow: boolean }
   schedule: Record<string, PrayerSchedule>
   scheduleMetadata: ScheduleMetadata
   slides: Slide[]
@@ -37,7 +39,7 @@ export type AppConfig = {
   friday: { khatib: string; imam: string; muadzin: string }
   finance: { balance: number; income: number; expense: number }
   audio: { tarhimId?: string; murottalId?: string; adhanId?: string }
-  timings: { preAdhanMinutes: number; adhanMinutes: number; iqamahMinutes: number; blackoutMinutes: number }
+  timings: { preAdhanMinutes: number; adhanMinutes: number; iqamahMinutes: number; fridayIqamahMinutes: number; blackoutMinutes: number }
 }
 
 export type StoredMedia = MediaItem & { blob: Blob }

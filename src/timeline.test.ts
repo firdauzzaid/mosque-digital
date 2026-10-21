@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { defaultConfig } from './defaults'
 import { dateKeyLocal, displayPhaseStatus, getPrayerPhase } from './timeline'
 
-const config = { ...defaultConfig, timings: { preAdhanMinutes: 15, adhanMinutes: 3, iqamahMinutes: 10, blackoutMinutes: 15 } }
+const config = { ...defaultConfig, timings: { preAdhanMinutes: 15, adhanMinutes: 3, iqamahMinutes: 10, fridayIqamahMinutes: 20, blackoutMinutes: 15 } }
 const schedules = { '2026-10-20': { subuh: '04:30' } }
 const emDash = String.fromCharCode(0x2014)
 
@@ -28,7 +28,7 @@ describe('prayer timeline', () => {
 
   it('uses the most recently started phase when extreme timing settings overlap prayers', () => {
     const overlappingSchedules = { '2026-10-20': { subuh: '04:30', dzuhur: '05:00' } }
-    const overlappingConfig = { ...config, timings: { preAdhanMinutes: 15, adhanMinutes: 3, iqamahMinutes: 10, blackoutMinutes: 30 } }
+    const overlappingConfig = { ...config, timings: { preAdhanMinutes: 15, adhanMinutes: 3, iqamahMinutes: 10, fridayIqamahMinutes: 20, blackoutMinutes: 30 } }
 
     expect(getPrayerPhase(new Date('2026-10-20T04:46:00'), overlappingSchedules, overlappingConfig)).toMatchObject({ name: 'preAdhan', prayer: 'dzuhur' })
   })
@@ -40,5 +40,13 @@ describe('prayer timeline', () => {
       previewLabel: `Tayangkan display ${emDash} hitam hingga 04.58`,
       notice: 'Display akan hitam hingga 04.58.',
     })
+  })
+
+  it('uses the separate 20-minute iqamah interval for Friday dzuhur only', () => {
+    const fridaySchedules = { '2026-10-23': { dzuhur: '12:00' }, '2026-10-24': { dzuhur: '12:00' } }
+
+    expect(getPrayerPhase(new Date('2026-10-23T12:13:00'), fridaySchedules, config).name).toBe('iqamah')
+    expect(getPrayerPhase(new Date('2026-10-23T12:23:00'), fridaySchedules, config).name).toBe('blackout')
+    expect(getPrayerPhase(new Date('2026-10-24T12:13:00'), fridaySchedules, config).name).toBe('blackout')
   })
 })

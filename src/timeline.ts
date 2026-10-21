@@ -18,7 +18,7 @@ export const displayPhaseStatus = (phase: PrayerPhase) => {
     const until = shortTime(phase.endsAt)
     return { previewLabel: `Tayangkan display ${emDash} hitam hingga ${until}`, notice: `Display akan hitam hingga ${until}.` }
   }
-  if (phase.name === 'preAdhan') return { previewLabel: `Tayangkan display ${emDash} menjelang azan${prayer}`, notice: `Display berada pada fase menjelang azan${prayer}.` }
+  if (phase.name === 'preAdhan') return { previewLabel: `Tayangkan display ${emDash} menjelang adzan${prayer}`, notice: `Display berada pada fase menjelang adzan${prayer}.` }
   if (phase.name === 'adhan') return { previewLabel: `Tayangkan display ${emDash} azan${prayer}`, notice: `Display berada pada fase azan${prayer}.` }
   if (phase.name === 'iqamah') return { previewLabel: `Tayangkan display ${emDash} menuju iqamah${prayer}`, notice: `Display berada pada fase menuju iqamah${prayer}.` }
   return { previewLabel: 'Tayangkan display', notice: 'Display siap ditayangkan.' }
@@ -44,7 +44,8 @@ const phaseForPrayer = (now: Date, day: Date, prayer: PrayerName, time: string, 
   const adhanAt = localTime(day, time)
   const preAdhanAt = new Date(adhanAt.getTime() - config.timings.preAdhanMinutes * 60_000)
   const iqamahAt = new Date(adhanAt.getTime() + config.timings.adhanMinutes * 60_000)
-  const blackoutAt = new Date(iqamahAt.getTime() + config.timings.iqamahMinutes * 60_000)
+  const iqamahMinutes = prayer === 'dzuhur' && day.getDay() === 5 ? config.timings.fridayIqamahMinutes : config.timings.iqamahMinutes
+  const blackoutAt = new Date(iqamahAt.getTime() + iqamahMinutes * 60_000)
   const displayAt = new Date(blackoutAt.getTime() + config.timings.blackoutMinutes * 60_000)
   const occurrenceKey = `${dateKeyLocal(day)}:${prayer}`
 
