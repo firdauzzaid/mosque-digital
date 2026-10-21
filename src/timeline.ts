@@ -10,16 +10,17 @@ export type PrayerPhase = {
 }
 
 const shortTime = (date: Date) => `${String(date.getHours()).padStart(2, '0')}.${String(date.getMinutes()).padStart(2, '0')}`
+const emDash = String.fromCharCode(0x2014)
 
 export const displayPhaseStatus = (phase: PrayerPhase) => {
   const prayer = phase.prayer ? ` ${phase.prayer}` : ''
   if (phase.name === 'blackout' && phase.endsAt) {
     const until = shortTime(phase.endsAt)
-    return { previewLabel: `Tayangkan display — hitam hingga ${until}`, notice: `Display akan hitam hingga ${until}.` }
+    return { previewLabel: `Tayangkan display ${emDash} hitam hingga ${until}`, notice: `Display akan hitam hingga ${until}.` }
   }
-  if (phase.name === 'preAdhan') return { previewLabel: `Tayangkan display — menjelang azan${prayer}`, notice: `Display berada pada fase menjelang azan${prayer}.` }
-  if (phase.name === 'adhan') return { previewLabel: `Tayangkan display — azan${prayer}`, notice: `Display berada pada fase azan${prayer}.` }
-  if (phase.name === 'iqamah') return { previewLabel: `Tayangkan display — menuju iqamah${prayer}`, notice: `Display berada pada fase menuju iqamah${prayer}.` }
+  if (phase.name === 'preAdhan') return { previewLabel: `Tayangkan display ${emDash} menjelang azan${prayer}`, notice: `Display berada pada fase menjelang azan${prayer}.` }
+  if (phase.name === 'adhan') return { previewLabel: `Tayangkan display ${emDash} azan${prayer}`, notice: `Display berada pada fase azan${prayer}.` }
+  if (phase.name === 'iqamah') return { previewLabel: `Tayangkan display ${emDash} menuju iqamah${prayer}`, notice: `Display berada pada fase menuju iqamah${prayer}.` }
   return { previewLabel: 'Tayangkan display', notice: 'Display siap ditayangkan.' }
 }
 

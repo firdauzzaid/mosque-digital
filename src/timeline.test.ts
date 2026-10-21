@@ -4,6 +4,7 @@ import { dateKeyLocal, displayPhaseStatus, getPrayerPhase } from './timeline'
 
 const config = { ...defaultConfig, timings: { preAdhanMinutes: 15, adhanMinutes: 3, iqamahMinutes: 10, blackoutMinutes: 15 } }
 const schedules = { '2026-10-20': { subuh: '04:30' } }
+const emDash = String.fromCharCode(0x2014)
 
 describe('prayer timeline', () => {
   it('starts tarhim and murottal exactly 15 minutes before adhan', () => {
@@ -32,11 +33,11 @@ describe('prayer timeline', () => {
     expect(getPrayerPhase(new Date('2026-10-20T04:46:00'), overlappingSchedules, overlappingConfig)).toMatchObject({ name: 'preAdhan', prayer: 'dzuhur' })
   })
 
-  it('explains an active blackout before the administrator returns to display', () => {
+  it('shows a real em dash in the active-blackout status', () => {
     const phase = getPrayerPhase(new Date('2026-10-20T04:43:00'), schedules, config)
 
     expect(displayPhaseStatus(phase)).toEqual({
-      previewLabel: 'Tayangkan display — hitam hingga 04.58',
+      previewLabel: `Tayangkan display ${emDash} hitam hingga 04.58`,
       notice: 'Display akan hitam hingga 04.58.',
     })
   })

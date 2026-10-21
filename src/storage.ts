@@ -5,7 +5,6 @@ const configKey = 'mosque-display.config.v1'
 const legacyKey = 'mosqueData'
 const databaseName = 'mosque-display'
 const mediaStore = 'media'
-const playbackKey = 'mosque-display.playback.v1'
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null && !Array.isArray(value)
 const text = (value: unknown, fallback: string) => typeof value === 'string' ? value : fallback
@@ -113,16 +112,6 @@ export const loadConfig = (): AppConfig => {
 
 export const saveConfig = (config: AppConfig) => localStorage.setItem(configKey, JSON.stringify(config))
 
-export const claimPrayerAudio = (occurrenceKey: string, phase: string) => {
-  const key = `${occurrenceKey}:${phase}`
-  const claimed = new Set<string>(JSON.parse(localStorage.getItem(playbackKey) ?? '[]'))
-  if (claimed.has(key)) return false
-  claimed.add(key)
-  const currentDate = occurrenceKey.slice(0, 10)
-  localStorage.setItem(playbackKey, JSON.stringify([...claimed].filter((item) => item.startsWith(currentDate))))
-  return true
-}
-
 const isLegacyBackup = (value: Record<string, unknown>) => typeof value.mosqueName === 'string' && isObject(value.schedule)
 
 export const createBackup = (config: AppConfig) => JSON.stringify({
@@ -142,8 +131,6 @@ export const parseBackup = (backup: string): { config: AppConfig; legacy: boolea
     return undefined
   } catch { return undefined }
 }
-
-export const importConfig = (backup: string): AppConfig | undefined => parseBackup(backup)?.config
 
 const database = () => new Promise<IDBDatabase>((resolve, reject) => {
   const request = indexedDB.open(databaseName, 1)

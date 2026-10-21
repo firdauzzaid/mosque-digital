@@ -53,6 +53,11 @@ The unsigned development APK will be at
 installed app requires its original Android signing key; otherwise Android
 treats this build as a different app.
 
+The Android wrapper requests launch after boot, but Android TV/STB vendors can
+block background launches. Enable the device's auto-start permission for this
+app, or use the device's kiosk/launcher mode, before relying on it after a
+power outage.
+
 ## Offline behaviour
 
 Configuration is saved in browser storage and uploaded media in IndexedDB.
