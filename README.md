@@ -53,10 +53,11 @@ The unsigned development APK will be at
 installed app requires its original Android signing key; otherwise Android
 treats this build as a different app.
 
-The Android wrapper requests launch after boot, but Android TV/STB vendors can
-block background launches. Enable the device's auto-start permission for this
-app, or use the device's kiosk/launcher mode, before relying on it after a
-power outage.
+The Android wrapper requests launch after a full Android boot and after an app
+update. Enable the device's auto-start permission for this app. For the most
+reliable display setup, choose **Mosque Display** as the device's Home/launcher
+app in its Default apps or Home app settings. This causes the display to return
+when a TV wakes from standby, where Android does not send a boot broadcast.
 
 ## Offline behaviour
 

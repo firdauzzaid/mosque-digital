@@ -2,6 +2,7 @@
   grid-template-columns: minmax(7rem, .85fr) minmax(5.5rem, .55fr) minmax(12rem, 1.55fr) minmax(8.5rem, .9fr) minmax(6rem, .7fr) auto auto;
 }
 .field.title-color input { height: 2.75rem; padding: .2rem; cursor: pointer; }
+.editor { container-type: inline-size; }
 
 .field.toggle { display: flex; align-items: center; gap: .5rem; }
 .field.toggle input { width: auto; }
@@ -41,13 +42,54 @@
 .masthead-date span { font-size: clamp(.7rem, 1vw, 1.25rem); }
 .masthead-clock { min-width: 14vw; color: var(--brass); font-family: Unna, Georgia, serif; font-size: clamp(1.8rem, 3.15vw, 4rem); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 1px 1px rgb(0 0 0 / .52); }
 .serambi-display .masthead-date { border-left: 0; }
-.serambi-display .next-prayer, .serambi-display .next-countdown { grid-template-rows: 2.8em auto; align-content: center; }
-.serambi-display .next-prayer > span, .serambi-display .next-countdown > span { display: grid; align-content: start; }
+.serambi-display .prayer-band { align-items: stretch; }
+.serambi-display .prayer-band > div { align-self: stretch; }
+.serambi-display .next-prayer, .serambi-display .next-time, .serambi-display .next-countdown {
+  grid-template-rows: minmax(2.8em, 32%) 1fr;
+  align-content: stretch;
+  gap: 0;
+}
+.serambi-display .next-prayer > span, .serambi-display .next-time > span, .serambi-display .next-countdown > span {
+  align-self: end;
+  margin-bottom: clamp(.25rem, .75vh, .65rem);
+}
+.serambi-display .next-prayer > strong, .serambi-display .next-time > strong, .serambi-display .next-countdown > strong { align-self: start; }
+.serambi-display .next-time > strong { font-size: clamp(3rem, 7.1vw, 9rem); transform: none; }
+.serambi-display .next-countdown > strong { transform: translateY(clamp(-.25rem, -.35vh, -.1rem)); }
+.serambi-display .next-time {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .2rem;
+  padding-bottom: 3.5%;
+}
+.serambi-display .next-time > span { align-self: center; margin-bottom: 0; }
+.serambi-display .next-time > strong { align-self: center; line-height: .72; transform: translateY(-.06em); }
+.serambi-display .next-prayer { padding-right: clamp(.75rem, 1.8vw, 2.25rem); }
+.serambi-display .next-countdown { padding-left: clamp(.75rem, 1.8vw, 2.25rem); }
 .serambi-display .announcement { left: 4.75%; width: 27%; }
 .serambi-display .announcement-copy { padding: 0; background: none; }
 .serambi-display .announcement, .serambi-display .announcement h2 { text-shadow: 0 2px 4px rgb(0 0 0 / .9), 0 0 14px rgb(0 0 0 / .62); }
+.serambi-display .announcement h2 { font-size: clamp(1.15rem, 2.55vw, 3.35rem); }
+.serambi-display .announcement-copy > strong { font-size: clamp(.65rem, 1.12vw, 1.45rem); font-weight: 700; }
+.serambi-display .announcement-copy > span { font-size: clamp(.65rem, 1.08vw, 1.35rem); font-weight: 700; }
+.serambi-display .documentation-stage img { object-position: center 58%; }
+.serambi-display .masthead-date strong { font-size: clamp(1.3rem, 2.3vw, 3rem); }
+.serambi-display .masthead-date span { font-size: clamp(.75rem, 1.1vw, 1.35rem); }
+.serambi-display .finance-details > span { font-size: clamp(.58rem, 1.02vw, 1.25rem); }
+.serambi-display .finance-details strong { font-size: clamp(.8rem, 1.75vw, 2.25rem); }
+.serambi-display .finance-details p { font-size: clamp(.56rem, .9vw, 1.12rem); }
+.serambi-display .ticker span { animation-name: serambi-ticker-readable; }
+@keyframes serambi-ticker-readable { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 .media-section { display: grid; gap: 1rem; }
 .media-list .media-action { padding: .55rem .7rem; border: 1px solid #cbd5e1; border-radius: .4rem; background: white; color: #0f172a; font-weight: 600; }
+
+@container (max-width: 64rem) {
+  .edit-row.slide-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .slide-actions { grid-column: 1 / -1; justify-content: flex-end; }
+  .edit-row.agenda-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .edit-row.agenda-row .field:nth-child(2), .edit-row.agenda-row .danger { grid-column: 1 / -1; }
+}
 
 @media (max-width: 900px) {
   .edit-row.slide-row { grid-template-columns: 1fr; }

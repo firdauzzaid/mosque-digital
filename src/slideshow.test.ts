@@ -29,6 +29,11 @@ describe('slide media selection', () => {
     expect(shouldAdvanceContent(1, 2, true, true)).toBe(false)
   })
 
+  it('cycles every image in a three-photo slideshow', () => {
+    const threePhotos = [...media, { id: 'foto-3', name: 'Kegiatan 3', type: 'image/jpeg' }]
+    expect([0, 1, 2, 3].map((index) => selectSlideMedia({}, index, threePhotos)?.id)).toEqual(['foto-1', 'foto-2', 'foto-3', 'foto-1'])
+  })
+
   it('returns a slide to the playlist when its selected media becomes a background', () => {
     const slides = releaseSlideMedia([{ id: 'kajian', title: 'Kajian', content: 'Ahad', mediaId: 'foto-1' }], 'foto-1')
     expect(slides[0]).toMatchObject({ mediaId: undefined, mediaMode: 'playlist' })
